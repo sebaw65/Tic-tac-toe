@@ -1,0 +1,23 @@
+@import "_settings.scss";
+.menu__playBtn {
+  font-family: $font;
+  font-size: 120px;
+  text-align: center;
+  //need to fix the centering method
+  line-height: 1.5;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  margin: auto;
+  height: 200px;
+  width: 300px;
+  border: 2px solid none;
+  border-radius: 20px;
+  background-color: $btnColor;
+  cursor: pointer;
+}
+.menu__btnText {
+  color: #fff;
+}

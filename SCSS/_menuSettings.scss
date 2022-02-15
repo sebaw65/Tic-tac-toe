@@ -1,0 +1,8 @@
+@import "_settings.scss";
+.menu__settings {
+  width: 100px;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  fill: $btnColor;
+}
