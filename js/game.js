@@ -6,57 +6,45 @@ document.getElementById('SettingsBtn').innerHTML = '<svg xmlns="http://www.w3.or
 
 //------------------------------------------------------------------------
 //variables
-let crossTurn = Math.random() >= 0.5;
-let winConditions = [
-    //horizontal
-    ['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'],
-    //vertical
-    ['1', '4', '7'], ['2', '5', '8'], ['3', '6', '9'],
-    //diagonal
-    ['1', '5', '9'], ['3', '5', '7']
-];
-let playerX = [];
-let playerO = [];
-let turnCounter = 0;
+let crossTurn = Math.random() >= 0.5,
+    winConditions = [
+        //horizontal
+        ['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'],
+        //vertical
+        ['1', '4', '7'], ['2', '5', '8'], ['3', '6', '9'],
+        //diagonal
+        ['1', '5', '9'], ['3', '5', '7']
+    ],
+    playerXFields = [],
+    playerOFields = [],
+    turnCounter = 0;
 //------------------------------------------------------------------------   
 
+document.getElementById('PlayGameBtn').addEventListener('click', displayGameScreen);
 
-//add eventListener to play button
-document.getElementById('PlayGameBtn').addEventListener('click', gameScreen);
-
-function gameScreen() {
-    //console.log('Button clicked');
+function displayGameScreen() {
     document.getElementById('menu').innerHTML = "";
-    game();
+    playGame();
 }
 
-function game() {
+function playGame() {
     /*  
-
     1. Draw a board
     2. Random player turn
     3. Draw a circle or cross in the place (depends on with player has turn), where player has clicked
     4. Check if the active player won
     5. Display win alert or go to point 3. 
-
     */
     console.log(crossTurn);
     drawBoard();
     drawFig();
-    
-    //console.log("Game has started")
 }
 
 function drawBoard() {
-    //define game screen main root
-    document.getElementById('menu').setAttribute('id', 'gameScreen');
-    let gameScreen = document.getElementById('gameScreen');
+    const gameScreen = document.getElementById('menu'),
+        boardGrid = document.createElement('div'),
+        gridCell = [];
 
-    //create elements
-    const boardGrid = document.createElement('div');
-    const gridCell = [];
-    
-    //create a class in elements
     boardGrid.classList.add('drawGrid');
     
     //create an id in elements
@@ -67,54 +55,66 @@ function drawBoard() {
     
     //create 9 cells which will match the characters
     for (let i = 1; i <= 9; i++){
-    gridCell[i] = document.createElement('div');
-    gridCell[i].classList.add('gridCell');
-    gridCell[i].setAttribute('id', 'gridId' + i);
+        gridCell[i] = document.createElement('div');
+        gridCell[i].classList.add('gridCell');
+        gridCell[i].setAttribute('id', 'gridId' + i);
         boardGrid.appendChild(gridCell[i]);
     }
 }
 
 function drawFig(){
-    const gridCell = [];
     for (let i = 1; i <= 9; i++) {
-        gridCell[i] = document.getElementById('gridId' + i);
-        //console.log(gridCell[i]);
-        gridCell[i].addEventListener('click', charInsert);
+        document.getElementById(`gridId${i}`).addEventListener('click', charInsert);
     }
 }
 
 function charInsert() {
     this.classList.add('char');
     if (crossTurn == true) {
-        //draw X if this is cross turn
         this.innerHTML = "X";
-        crossTurn = false;
-        playerX.push(this.id.substring(6));
-        console.log("player X arr:" + playerX);
-    }
-    else {
-        ////draw O if this is NOT cross turn
+        playerXFields.push(this.id.substring(6));
+        console.log("player X arr:" + playerXFields);
+    } else {
         this.innerHTML = "O";
-        crossTurn = true;
-        playerO.push(this.id.substring(6));
-        console.log("player O arr:" + playerO);
+        playerOFields.push(this.id.substring(6));
+        console.log("player O arr:" + playerOFields);
     }
-    turnCounter++;
     checkIfPlayerWon();
+    if (turnCounter == 8) {
+            console.log("Draw");
+            removeFieldClick();
+            return;
+        }
+    console.log(turnCounter);
     this.classList.add('disabled');
     this.removeEventListener('click', charInsert);
+    crossTurn = !crossTurn;
+    turnCounter++;
 }
 
 function checkIfPlayerWon() {
+    //check each player if any has won
     winConditions.forEach(winCondition => {
-        let winO = winCondition.every(element => playerO.includes(element));
-        let winX = winCondition.every(element => playerX.includes(element));
+        let winOPlayer = winCondition.every(element => playerOFields.includes(element));
+        let winXPlayer = winCondition.every(element => playerXFields.includes(element));
 
-        if (winO == true)
-            alert("Player with O have won!");
-        if (winX == true)
-            alert("Player with X have won!");
-        if (turnCounter == 9)
-            alert("Draw");
-    })
+        if (winOPlayer == true) {
+            console.log("Player with O have won!");
+            removeFieldClick();
+            return;
+        }
+        if (winXPlayer == true) {
+            console.log("Player with X have won!");
+            removeFieldClick();
+            return;
+        }
+        return true;
+    });
+}
+
+function removeFieldClick() {
+    for (let i = 1; i <= 9; i++) {
+        document.getElementById(`gridId${i}`).classList.add('disabled');
+        document.getElementById(`gridId${i}`).removeEventListener('click', charInsert);
+    }
 }
