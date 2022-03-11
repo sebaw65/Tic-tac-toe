@@ -17,10 +17,12 @@ let crossTurn = Math.random() >= 0.5,
     ],
     playerXFields = [],
     playerOFields = [],
-    turnCounter = 0;
+    turnCounter = 0
+    win = false;
 //------------------------------------------------------------------------   
 
 document.getElementById('PlayGameBtn').addEventListener('click', displayGameScreen);
+document.getElementById('SettingsBtn').addEventListener('click', displaySettings);
 
 function displayGameScreen() {
     document.getElementById('menu').innerHTML = "";
@@ -80,7 +82,7 @@ function charInsert() {
         console.log("player O arr:" + playerOFields);
     }
     checkIfPlayerWon();
-    if (turnCounter == 8) {
+    if (turnCounter == 8 && win === false) {
             console.log("Draw");
             removeFieldClick();
             return;
@@ -98,17 +100,18 @@ function checkIfPlayerWon() {
         let winOPlayer = winCondition.every(element => playerOFields.includes(element));
         let winXPlayer = winCondition.every(element => playerXFields.includes(element));
 
-        if (winOPlayer == true) {
+        if (winOPlayer === true) {
             console.log("Player with O have won!");
             removeFieldClick();
+            win = true;
             return;
         }
-        if (winXPlayer == true) {
+        if (winXPlayer === true) {
             console.log("Player with X have won!");
             removeFieldClick();
+            win = true;
             return;
         }
-        return true;
     });
 }
 
@@ -117,4 +120,7 @@ function removeFieldClick() {
         document.getElementById(`gridId${i}`).classList.add('disabled');
         document.getElementById(`gridId${i}`).removeEventListener('click', charInsert);
     }
+}
+function displaySettings() {
+    console.log('settings');
 }
